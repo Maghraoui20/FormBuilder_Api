@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 const SubmitForm = require('../models/submittedForm');
 const moment= require("moment");
 exports.CreateSubmitForm =async (req, res) => {
@@ -47,7 +48,26 @@ return res.status(200).json(users);
     try {
      
       console.log(req.query, "body");
-      const submissionform = await SubmitForm.find({created : {$gte :new Date(req.query.date)}}).select('user formSubmissions created').populate('user');
+      const matchFormId = req.query.formId
+  ? { 'form': mongoose.Types.ObjectId(req.query.formId) }
+  : { 'form': { $exists: true } };
+
+  const matchPageId = req.query.pageId
+  ? { 'page': mongoose.Types.ObjectId(req.query.pageId) }
+  : { 'page': { $exists: true } };
+
+const matchCreated = {
+  created: {
+    $gte: req.query.date ? new Date(req.query.date) : new Date('1900-01-01')
+  }
+};
+
+const query = {
+  $and: [matchPageId, matchFormId, matchCreated]
+};
+
+const submissionform = await SubmitForm.find(query).populate('user');
+      // const submissionform = await SubmitForm.find({created : {$gte :new Date(req.query.date)}}).select('user formSubmissions created').populate('user');
       console.log("submissionform", submissionform);
 
       res.status(200).json(submissionform);

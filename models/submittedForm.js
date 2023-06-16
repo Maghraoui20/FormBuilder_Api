@@ -12,7 +12,10 @@ const submittedformSchema = new mongoose.Schema({
             valueInput: String
         }
     ],
-  
+    page: {
+        type: ObjectId,
+        ref: 'Page'
+    },
     form: {
         type: ObjectId,
         ref: 'Form'
