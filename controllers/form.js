@@ -36,22 +36,7 @@ console.log(savedForm)
       res.status(200).json(savedForm) 
 }
 
-exports.FiltredForms =async (req, res) => {
-  try {
-    const id=req.params.id;
-    console.log(id,"idpage");
-    let tabsId ="";
-    let form = await Form.findById(id).select('_id');
-    console.log(form);
-    tabsId = form._id;
 
-    const submissionform = await SubmitForm.find({form :  tabsId}).select('user formSubmissions created').populate('user');
-      res.status(200).json(submissionform);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
-    }
-
-};
 
 exports.DeleteForm = async(req, res) => {
   const id=req.params.id;
